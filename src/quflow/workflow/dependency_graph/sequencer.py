@@ -4,7 +4,9 @@ import rustworkx as rx
 from ..node import Node, ParallelNode, NodeTypes
 
 
-def topological_sequencer(graph: rx.PyDiGraph[Node, Any]) -> Generator[list[Node], None, None]:
+def topological_sequencer(
+    graph: rx.PyDiGraph[Node, Any],
+) -> Generator[list[Node], None, None]:
     """
     sort the graph by using topological ordering.
     yields a list of nodes
@@ -24,7 +26,9 @@ def topological_sequencer(graph: rx.PyDiGraph[Node, Any]) -> Generator[list[Node
         sorter.done(nodes)
 
 
-def split_to_non_parallel_and_parallel(nodes: list[NodeTypes]) -> tuple[list[Node], list[ParallelNode]]:
+def split_to_non_parallel_and_parallel(
+    nodes: list[NodeTypes],
+) -> tuple[list[Node], list[ParallelNode]]:
     # split them into parallel and non-parallel
 
     parallel_nodes = [n for n in nodes if isinstance(n, ParallelNode)]
@@ -36,6 +40,8 @@ def split_to_non_parallel_and_parallel(nodes: list[NodeTypes]) -> tuple[list[Nod
     return non_parallel_nodes, parallel_nodes
 
 
-def sequencer_of_nodes_and_parallel(graph: rx.PyDiGraph[Node, Any]) -> Generator[tuple[list[Node], list[ParallelNode]], None, None]:
+def sequencer_of_nodes_and_parallel(
+    graph: rx.PyDiGraph[Node, Any],
+) -> Generator[tuple[list[Node], list[ParallelNode]], None, None]:
     for nodes in topological_sequencer(graph):
         yield split_to_non_parallel_and_parallel(nodes)

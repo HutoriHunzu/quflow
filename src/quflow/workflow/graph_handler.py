@@ -1,12 +1,13 @@
 """
 governs the basic functionality needed from graph
 """
+
 import rustworkx as rx
 from .node import NodeTypes
 from typing import TypeVar, Generic
 from enum import StrEnum, auto
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class GraphTypes(StrEnum):
@@ -15,7 +16,6 @@ class GraphTypes(StrEnum):
 
 
 class GraphHandler(Generic[T]):
-
     def __init__(self, graph, graph_type):
         self.type: GraphTypes = graph_type
         self.graph: rx.PyDiGraph[NodeTypes, T] = graph
@@ -44,7 +44,7 @@ class GraphHandler(Generic[T]):
         try:
             node = self.node_name_to_node[name]
         except KeyError:
-            raise KeyError(f'Cannot find {name} in {self.node_name_to_node.keys()}')
+            raise KeyError(f"Cannot find {name} in {self.node_name_to_node.keys()}")
 
         return self.node_to_index(node)
 
@@ -56,7 +56,6 @@ class GraphHandler(Generic[T]):
         new_edges = map(lambda x: (x[0], new_node_index, x[2]), ref_edges)
         self.graph.add_edges_from(new_edges)
 
-
     def get_all_nodes(self) -> list[NodeTypes]:
         return self.graph.nodes()
 
@@ -64,7 +63,9 @@ class GraphHandler(Generic[T]):
         try:
             return node.get_graph_membership_index(self.type)
         except KeyError:
-            raise KeyError(f'Cannot find {node.name} in graph membership, probability forgot to add node to Workflow')
+            raise KeyError(
+                f"Cannot find {node.name} in graph membership, probability forgot to add node to Workflow"
+            )
 
     def add_edge_by_nodes(self, node_a, node_b, payload):
         node_a_index = self.node_to_index(node_a)
@@ -77,8 +78,11 @@ class GraphHandler(Generic[T]):
         self.graph.add_edge(node_a_index, node_b_index, payload)
 
     def generate_non_isolated_subgraph(self):
-        non_isolated_nodes = [n for n in self.graph.node_indices() if
-                              self.graph.in_degree(n) > 0 or self.graph.out_degree(n) > 0]
+        non_isolated_nodes = [
+            n
+            for n in self.graph.node_indices()
+            if self.graph.in_degree(n) > 0 or self.graph.out_degree(n) > 0
+        ]
         return self.graph.subgraph(non_isolated_nodes)
 
 

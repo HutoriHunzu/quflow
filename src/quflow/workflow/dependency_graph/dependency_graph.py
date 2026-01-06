@@ -27,7 +27,9 @@ class DependencyGraph:
 
     def __init__(self):
         self.graph: rx.PyDiGraph[NodeTypes, None] = rx.PyDiGraph()
-        self.handler: GraphHandler[None] = GraphHandler(self.graph, GraphTypes.DEPENDENCY)
+        self.handler: GraphHandler[None] = GraphHandler(
+            self.graph, GraphTypes.DEPENDENCY
+        )
         self.node_index_to_execution_order: dict[int, int] = {}
 
     def add_node(self, node: NodeTypes):
@@ -68,8 +70,12 @@ class DependencyGraph:
 
     def update_node_index_to_execution_order(self):
         def _helper():
-            for non_parallel_nodes, parallel_nodes in sequencer_of_nodes_and_parallel(self.graph):
-                non_parallel_indexes = list(map(self.handler.node_to_index, non_parallel_nodes))
+            for non_parallel_nodes, parallel_nodes in sequencer_of_nodes_and_parallel(
+                self.graph
+            ):
+                non_parallel_indexes = list(
+                    map(self.handler.node_to_index, non_parallel_nodes)
+                )
                 parallel_indexes = list(map(self.handler.node_to_index, parallel_nodes))
 
                 if non_parallel_indexes:
@@ -80,10 +86,14 @@ class DependencyGraph:
 
         self.node_index_to_execution_order = {}
         for execution_order, nodes_indexes in enumerate(_helper()):
-            self.node_index_to_execution_order.update({idx: execution_order for idx in nodes_indexes})
+            self.node_index_to_execution_order.update(
+                {idx: execution_order for idx in nodes_indexes}
+            )
 
     def execute(self):
-        for non_parallel_nodes, parallel_nodes in sequencer_of_nodes_and_parallel(self.graph):
+        for non_parallel_nodes, parallel_nodes in sequencer_of_nodes_and_parallel(
+            self.graph
+        ):
             self.execute_non_parallel_nodes(non_parallel_nodes)
             self.execute_parallel_nodes(parallel_nodes)
 
@@ -92,12 +102,13 @@ class DependencyGraph:
         return self.node_display_formatter
 
     def node_display_formatter(self, node) -> str:
-        execution_order = self.node_index_to_execution_order[self.handler.node_to_index(node)]
-        centered_order_with_format = f'{execution_order}'.center(len(node.name))
-        return f'{node.name}\n{centered_order_with_format}'
+        execution_order = self.node_index_to_execution_order[
+            self.handler.node_to_index(node)
+        ]
+        centered_order_with_format = f"{execution_order}".center(len(node.name))
+        return f"{node.name}\n{centered_order_with_format}"
 
     def visualize(self, ax=None, pos=None):
-
         node_formatter = self.prepare_node_formatter()
 
         mpl_draw(
@@ -108,8 +119,7 @@ class DependencyGraph:
             node_size=2000,
             font_size=12,
             font_color="black",
-            ax=ax
+            ax=ax,
         )
 
         return node_formatter
-

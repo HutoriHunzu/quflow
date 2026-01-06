@@ -16,7 +16,6 @@ def return_most_harsh_status(statuses: Iterable[Status]):
 
 
 class StatusReporter:
-
     def __init__(self):
         self._status_reporter: Callable[[Status], None] | None = None
         self.status: Status = Status.PENDING

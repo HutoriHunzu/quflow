@@ -11,9 +11,9 @@ def empty_write(data=None):
     pass
 
 
-def io_adapter(read_channel: Channel | None = None,
-               write_channel: Channel | None = None):
-
+def io_adapter(
+    read_channel: Channel | None = None, write_channel: Channel | None = None
+):
     read_callable = read_channel.read if read_channel else empty_read
     write_callable = write_channel.write if write_channel else empty_write
     return read_callable, write_callable
@@ -61,12 +61,11 @@ class Node:
     #     self.status = status_value
 
     def create_context(self) -> TaskContext:
-        read_callable, write_callable = io_adapter(self.read_channel, self.write_channel)
+        read_callable, write_callable = io_adapter(
+            self.read_channel, self.write_channel
+        )
         return TaskContext(read_callable=read_callable, write_callable=write_callable)
-
 
     def run(self):
         ctx = self.create_context()
         return self.task.run(ctx)
-
-

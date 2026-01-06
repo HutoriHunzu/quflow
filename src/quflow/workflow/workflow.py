@@ -3,6 +3,7 @@ contains a unified class to support high level methods for connecting tasks
 should expose Node if wanted but maybe keep it inside
 
 """
+
 from .node import NodeTypes
 from .dependency_graph import DependencyGraph
 from .dataflow_graph import DataFlowGraph
@@ -61,8 +62,12 @@ class Workflow:
         self.dependency_graph.copy_deg_in(ref_node_name, new_node_name)
 
     def replace_node(self, old_node_name: str, new_node: NodeTypes):
-        self.dependency_graph.replace_node(old_node_name=old_node_name, new_node=new_node)
-        self.data_flow_graph.replace_node(old_node_name=old_node_name, new_node=new_node)
+        self.dependency_graph.replace_node(
+            old_node_name=old_node_name, new_node=new_node
+        )
+        self.data_flow_graph.replace_node(
+            old_node_name=old_node_name, new_node=new_node
+        )
 
     def add_nodes(self, nodes: list[NodeTypes]):
         for node in nodes:
@@ -84,7 +89,6 @@ class Workflow:
     def connect_dataflow_by_name(self, node_a: str, node_b: str, channel: Channel):
         self.data_flow_graph.connect_dataflow_by_name(node_a, node_b, channel)
 
-
     def connect(self, node_a, node_b, channel: Channel | None = None):
         self.connect_dependency(node_a, node_b)
         if channel:
@@ -98,7 +102,7 @@ class Workflow:
         # checks there are nodes to run
         nodes = self.dependency_graph.nodes()
         if len(nodes) == 0:
-            raise ValueError('Cannot execute Workflow without any nodes')
+            raise ValueError("Cannot execute Workflow without any nodes")
 
     def execute(self):
         self.validate()
@@ -110,7 +114,9 @@ class Workflow:
 
         # setting the most harsh status over all the nodes
         participating_nodes = self.dependency_graph.nodes()
-        self.status = return_most_harsh_status(map(lambda x: x.status, participating_nodes))
+        self.status = return_most_harsh_status(
+            map(lambda x: x.status, participating_nodes)
+        )
 
     def visualize(self):
         # computing unified position
@@ -120,11 +126,13 @@ class Workflow:
         fig, axs = plt.subplots(ncols=2, figsize=(16, 10))
 
         node_formatter = self.dependency_graph.visualize(ax=axs[0], pos=pos)
-        axs[0].set_title('Dependency graph')
+        axs[0].set_title("Dependency graph")
         axs[0].margins(0.15)
 
-        self.data_flow_graph.visualize(ax=axs[1], pos=pos, node_formatter=node_formatter)
-        axs[1].set_title('Dataflow graph')
+        self.data_flow_graph.visualize(
+            ax=axs[1], pos=pos, node_formatter=node_formatter
+        )
+        axs[1].set_title("Dataflow graph")
         axs[1].margins(0.15)
 
         fig.tight_layout()

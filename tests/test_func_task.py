@@ -1,4 +1,3 @@
-import pytest
 
 from quflow.status import Status
 

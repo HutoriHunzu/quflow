@@ -3,8 +3,6 @@ from quflow.status import Status
 from quflow.tasks.base.context import TaskContext
 
 
-
-
 class Task(ABC):
     """
     Defined the correct interface of a TASK.
@@ -16,5 +14,3 @@ class Task(ABC):
     @abstractmethod
     def run(self, ctx: TaskContext) -> Status:
         pass
-
-

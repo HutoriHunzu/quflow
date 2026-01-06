@@ -3,7 +3,6 @@ from .base import StorageBase, T
 
 
 class MultiItemStorage(StorageBase[T]):
-
     def __init__(self, maxsize: int = 0):
         self.maxsize = maxsize
         self.queue = Queue(maxsize=maxsize)
@@ -23,7 +22,7 @@ class MultiItemStorage(StorageBase[T]):
 
     @property
     def type(self):
-        return 'MultiItemStorage'
+        return "MultiItemStorage"
 
     def is_empty(self) -> bool:
         return self.queue.empty()

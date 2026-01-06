@@ -1,6 +1,7 @@
 """
 governs the connecting of communication channels in DiGraph
 """
+
 import rustworkx as rx
 from rustworkx.visualization import mpl_draw
 from quflow.communications import Channel
@@ -10,7 +11,6 @@ from .graph_handler import GraphHandler, GraphTypes
 
 def default_formatter(node: NodeTypes):
     return node.name
-
 
 
 class DataFlowGraph:
@@ -29,7 +29,9 @@ class DataFlowGraph:
 
     def __init__(self):
         self.graph: rx.PyDiGraph[NodeTypes, Channel] = rx.PyDiGraph()
-        self.handler: GraphHandler[Channel] = GraphHandler(self.graph, GraphTypes.DATAFLOW)
+        self.handler: GraphHandler[Channel] = GraphHandler(
+            self.graph, GraphTypes.DATAFLOW
+        )
 
     def add_node(self, node: NodeTypes):
         self.handler.add_node(node)
@@ -47,7 +49,9 @@ class DataFlowGraph:
         # adding an edge
         self.handler.add_edge_by_nodes(node_a, node_b, channel)
 
-    def connect_dataflow_by_name(self, node_a_name: str, node_b_name: str, channel: Channel):
+    def connect_dataflow_by_name(
+        self, node_a_name: str, node_b_name: str, channel: Channel
+    ):
         node_a = self.handler.node_name_to_node[node_a_name]
         node_b = self.handler.node_name_to_node[node_b_name]
         self.connect_dataflow(node_a, node_b, channel)

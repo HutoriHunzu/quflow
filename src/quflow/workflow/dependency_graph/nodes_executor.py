@@ -51,6 +51,3 @@ def execute_multiple_nodes(nodes: list[ParallelNode]) -> None:
         # Check for exceptions in background tasks
         for future in future_tasks:
             future.result()  # Raises exception if any occurred during execution
-
-
-

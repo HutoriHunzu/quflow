@@ -13,11 +13,6 @@ def empty_write(data=None):
 
 @dataclass
 class TaskContext:
-
     read_callable: Callable[[], Any] = empty_read
     write_callable: Callable[[Any], None] = empty_write
     interrupt: threading.Event = threading.Event()
-
-
-
-

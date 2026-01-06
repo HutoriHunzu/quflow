@@ -3,4 +3,4 @@ from .single_item import SingleItemStorage
 from .multi_item import MultiItemStorage
 
 
-__all__ = ['StorageBase', 'SingleItemStorage', 'MultiItemStorage']
+__all__ = ["StorageBase", "SingleItemStorage", "MultiItemStorage"]

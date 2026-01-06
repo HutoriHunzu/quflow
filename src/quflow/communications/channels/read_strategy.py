@@ -2,14 +2,12 @@ from abc import abstractmethod
 from typing import Generic, TypeVar
 from ..storage import StorageBase, SingleItemStorage, MultiItemStorage
 
-T = TypeVar('T')
-R_co = TypeVar('R_co', covariant=True)
-
+T = TypeVar("T")
+R_co = TypeVar("R_co", covariant=True)
 
 
 # Define interfaces for read and write strategies.
 class ReadStrategy(Generic[T, R_co]):
-
     @abstractmethod
     def read(self, storage: StorageBase) -> R_co:
         pass
@@ -20,17 +18,18 @@ class ReadStrategy(Generic[T, R_co]):
 
 
 class SingleReadStrategy(ReadStrategy[T, T | None]):
-
     def read(self, storage: SingleItemStorage[T] | MultiItemStorage[T]) -> T | None:
         return storage.read()
 
     def validate(self, storage: SingleItemStorage[T] | MultiItemStorage[T]):
-        if not (isinstance(storage, SingleItemStorage) or isinstance(storage, MultiItemStorage)):
-            raise TypeError(f'SingleReadStrategy doesnt works with {type(storage)}')
+        if not (
+            isinstance(storage, SingleItemStorage)
+            or isinstance(storage, MultiItemStorage)
+        ):
+            raise TypeError(f"SingleReadStrategy doesnt works with {type(storage)}")
 
 
 class MultiReadStrategy(ReadStrategy[T, list[T]]):
-
     def __init__(self, chunk_size: int | None):
         self.chunk_size = chunk_size
 
@@ -47,7 +46,7 @@ class MultiReadStrategy(ReadStrategy[T, list[T]]):
 
     def validate(self, storage: MultiItemStorage[T]):
         if not isinstance(storage, MultiItemStorage):
-            raise TypeError(f'MultiReadStrategy doesnt works with {type(storage)}')
+            raise TypeError(f"MultiReadStrategy doesnt works with {type(storage)}")
 
     @staticmethod
     def generate_read(amount, storage):

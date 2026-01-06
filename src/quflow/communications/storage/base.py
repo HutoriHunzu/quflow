@@ -3,17 +3,15 @@ from typing import TypeVar, Generic
 from enum import StrEnum, auto
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class StorageNames(StrEnum):
-
     MULTI_ITEM = auto()
     SINGLE_ITEM = auto()
 
 
 class StorageBase(ABC, Generic[T]):
-
     @abstractmethod
     def write(self, data: T):
         pass
@@ -38,4 +36,3 @@ class StorageBase(ABC, Generic[T]):
     @abstractmethod
     def type(self) -> StorageNames:
         pass
-

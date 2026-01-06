@@ -5,14 +5,20 @@ shared memories
 """
 
 from .base import Task, TaskContext
-from .templates import InputFuncTask, OutputFuncTask, ContextFuncTask, PollingTask, TransformFuncTask
+from .templates import (
+    InputFuncTask,
+    OutputFuncTask,
+    ContextFuncTask,
+    PollingTask,
+    TransformFuncTask,
+)
 
-__all__ = ['Task', 
-           'TaskContext', 
-           'InputFuncTask', 
-           'OutputFuncTask', 
-           'ContextFuncTask', 
-           'PollingTask', 
-           'TransformFuncTask']
-
-
+__all__ = [
+    "Task",
+    "TaskContext",
+    "InputFuncTask",
+    "OutputFuncTask",
+    "ContextFuncTask",
+    "PollingTask",
+    "TransformFuncTask",
+]

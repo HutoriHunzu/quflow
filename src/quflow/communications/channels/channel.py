@@ -3,9 +3,9 @@ from ..storage import StorageBase
 from .read_strategy import ReadStrategy
 from .write_strategy import WriteStrategy
 
-T = TypeVar('T')
-R = TypeVar('R')
-W = TypeVar('W')
+T = TypeVar("T")
+R = TypeVar("R")
+W = TypeVar("W")
 
 
 class Channel(Generic[T, R, W]):
@@ -33,10 +33,10 @@ class Channel(Generic[T, R, W]):
     """
 
     def __init__(
-            self,
-            storage: StorageBase[T],
-            read_strategy: ReadStrategy[T, R],
-            write_strategy: WriteStrategy[T, W],
+        self,
+        storage: StorageBase[T],
+        read_strategy: ReadStrategy[T, R],
+        write_strategy: WriteStrategy[T, W],
     ):
         self.storage = storage
         self.read_strategy = read_strategy

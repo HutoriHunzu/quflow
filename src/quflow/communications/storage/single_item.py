@@ -23,8 +23,7 @@ class SingleItemStorage(StorageBase[T]):
 
     @property
     def type(self):
-        return 'SingleItemStorage'
-
+        return "SingleItemStorage"
 
     def is_empty(self) -> bool:
-        return not bool(self) # bool on deque returns if it has anything
+        return not bool(self)  # bool on deque returns if it has anything

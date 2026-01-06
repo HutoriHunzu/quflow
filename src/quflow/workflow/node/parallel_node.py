@@ -3,12 +3,8 @@ from .node import Node
 from quflow.tasks import Task, TaskContext
 
 
-
 class ParallelNode(Node):
-
-    def __init__(self, name: str, task: Task,
-                 run_in_main_thread: bool = False):
-
+    def __init__(self, name: str, task: Task, run_in_main_thread: bool = False):
         super().__init__(name=name, task=task)
         self.run_in_main_thread = run_in_main_thread
         self._interrupt: Event | None = None
