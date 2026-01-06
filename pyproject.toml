@@ -1,10 +1,10 @@
 [project]
 name = "quflow"
-version = "0.1.0"
+version = "0.2.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [
-    { name = "RosenblumLabUser", email = "79983570+RosenblumLabUser@users.noreply.github.com" }
+    { name = "Uri Goldblatt", email = "uri.goldblatt@gmail.com" }
 ]
 requires-python = ">=3.11"
 dependencies = [
@@ -12,7 +12,12 @@ dependencies = [
     "rustworkx>=0.16.0",
     "matplotlib",
     "pyqt5==5.15.11",
-    "pytest"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff"
 ]
 
 [build-system]
