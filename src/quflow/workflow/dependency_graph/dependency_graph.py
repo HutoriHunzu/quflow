@@ -1,6 +1,6 @@
 import rustworkx as rx
 from rustworkx.visualization import mpl_draw
-from typing import Generator, Callable, Iterator
+from typing import Callable
 from ..node import NodeTypes, Node, ParallelNode
 from ..graph_handler import GraphHandler, GraphTypes
 
@@ -54,25 +54,17 @@ class DependencyGraph:
         if not nodes:
             return
 
-        self.create_and_connect_interrupts(nodes)
+        # Create Event and connect it
+        interrupt = threading.Event()
+        for node in nodes:
+            node.load_interrupt(interrupt)
+
         execute_multiple_nodes(nodes)
-        self.disconnect_interrupts(nodes)
 
     @staticmethod
     def execute_non_parallel_nodes(nodes: list[Node]):
         for node in nodes:
             node.run()
-
-    @staticmethod
-    def create_and_connect_interrupts(nodes: list[NodeTypes]):
-        interrupt = threading.Event()
-        for node in nodes:
-            node.interrupt = interrupt
-
-    @staticmethod
-    def disconnect_interrupts(nodes: list[NodeTypes]):
-        for node in nodes:
-            node.interrupt = None
 
     def update_node_index_to_execution_order(self):
         def _helper():

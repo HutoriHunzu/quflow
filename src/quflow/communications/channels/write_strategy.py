@@ -1,5 +1,4 @@
-import threading
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Generic, TypeVar
 from ..storage import StorageBase, SingleItemStorage, MultiItemStorage
 

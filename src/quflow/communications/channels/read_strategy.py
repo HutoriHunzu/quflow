@@ -1,5 +1,4 @@
-import threading
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Generic, TypeVar
 from ..storage import StorageBase, SingleItemStorage, MultiItemStorage
 
@@ -32,7 +31,7 @@ class SingleReadStrategy(ReadStrategy[T, T | None]):
 
 class MultiReadStrategy(ReadStrategy[T, list[T]]):
 
-    def __init__(self, chunk_size: int):
+    def __init__(self, chunk_size: int | None):
         self.chunk_size = chunk_size
 
     def read(self, storage: MultiItemStorage[T]) -> list[T]:

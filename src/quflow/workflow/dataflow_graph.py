@@ -8,6 +8,10 @@ from .node import NodeTypes
 from .graph_handler import GraphHandler, GraphTypes
 
 
+def default_formatter(node: NodeTypes):
+    return node.name
+
+
 
 class DataFlowGraph:
     """Stores the data flow connections among Nodes.
@@ -43,16 +47,16 @@ class DataFlowGraph:
         # adding an edge
         self.handler.add_edge_by_nodes(node_a, node_b, channel)
 
-    def connect_dataflow_by_name(self, node_a: str, node_b: str, channel: Channel):
-        node_a = self.handler.node_name_to_node[node_a]
-        node_b = self.handler.node_name_to_node[node_b]
+    def connect_dataflow_by_name(self, node_a_name: str, node_b_name: str, channel: Channel):
+        node_a = self.handler.node_name_to_node[node_a_name]
+        node_b = self.handler.node_name_to_node[node_b_name]
         self.connect_dataflow(node_a, node_b, channel)
 
     def visualize(self, ax=None, pos=None, node_formatter=None):
         non_isolated_graph = self.handler.generate_non_isolated_subgraph()
 
         if node_formatter is None:
-            node_formatter = lambda x: x.name
+            node_formatter = default_formatter
 
         mpl_draw(
             non_isolated_graph,

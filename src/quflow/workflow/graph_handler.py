@@ -22,10 +22,7 @@ class GraphHandler(Generic[T]):
         self.node_name_to_node: dict = {}
 
     def __getitem__(self, item: int):
-        try:
-            return self.graph[item]
-        except KeyError:
-            return None
+        return self.graph[item]
 
     def add_node(self, node: NodeTypes):
         node_index = self.graph.add_node(node)

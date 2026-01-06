@@ -16,7 +16,7 @@ def topological_sequencer(graph: rx.PyDiGraph[Node, Any]) -> Generator[list[Node
     assert rx.is_directed_acyclic_graph(graph), "Graph contains a cycle!"
 
     # Perform topological sorting with batch layers
-    sorter = rx.TopologicalSorter(graph)
+    sorter = rx.TopologicalSorter(graph, check_cycle=False)
 
     while sorter.is_active():
         nodes = sorter.get_ready()
@@ -27,18 +27,13 @@ def topological_sequencer(graph: rx.PyDiGraph[Node, Any]) -> Generator[list[Node
 def split_to_non_parallel_and_parallel(nodes: list[NodeTypes]) -> tuple[list[Node], list[ParallelNode]]:
     # split them into parallel and non-parallel
 
-    parallel_nodes = list(filter(lambda x: isinstance(x, ParallelNode), nodes))
-    non_parallel_nodes = list(filter(lambda x: not isinstance(x, ParallelNode), nodes))
+    parallel_nodes = [n for n in nodes if isinstance(n, ParallelNode)]
+    non_parallel_nodes = [n for n in nodes if not isinstance(n, ParallelNode)]
+    # non_parallel_nodes = list(filter(lambda x: not isinstance(x, ParallelNode), nodes))
 
     # first yield one by one the non-parallel part (no matter the order)
     # then yield the parallel part
     return non_parallel_nodes, parallel_nodes
-
-    # if non_parallel_nodes:
-    #     yield from non_parallel_nodes  # it means that it will yield them one by one
-    #
-    # if parallel_nodes:
-    #     yield parallel_nodes
 
 
 def sequencer_of_nodes_and_parallel(graph: rx.PyDiGraph[Node, Any]) -> Generator[tuple[list[Node], list[ParallelNode]], None, None]:

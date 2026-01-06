@@ -60,7 +60,7 @@ class Node:
     # def set_status(self, status_value: Status):
     #     self.status = status_value
 
-    def create_context(self):
+    def create_context(self) -> TaskContext:
         read_callable, write_callable = io_adapter(self.read_channel, self.write_channel)
         return TaskContext(read_callable=read_callable, write_callable=write_callable)
 

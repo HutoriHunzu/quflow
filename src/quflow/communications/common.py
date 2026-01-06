@@ -12,7 +12,7 @@ def create_single_item_channel() -> Channel:
     )
 
 
-def create_queue_channel(read_max_chunk: int = None, maxsize: int = 0) -> Channel:
+def create_queue_channel(read_max_chunk: int | None = None, maxsize: int = 0) -> Channel:
     """note that max length = None is infinite"""
     storage = MultiItemStorage(maxsize=maxsize)
     return Channel(

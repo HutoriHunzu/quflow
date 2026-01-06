@@ -1,7 +1,6 @@
 import threading
 from concurrent import futures
-from ..node import NodeTypes, Node, ParallelNode
-from threading import Event
+from ..node import Node, ParallelNode
 
 
 def execute_multiple_nodes(nodes: list[ParallelNode]) -> None:
@@ -54,34 +53,4 @@ def execute_multiple_nodes(nodes: list[ParallelNode]) -> None:
             future.result()  # Raises exception if any occurred during execution
 
 
-def _execute_single(node: Node) -> None:
-    """
-    Executes a single node sequentially.
 
-    Args:
-        node (Node): The node to execute.
-    """
-    node.run()
-
-
-def execute_nodes(nodes: list[ParallelNode] | Node) -> None:
-    """
-    Executes a list of nodes based on its length.
-
-    - If the list is **empty**, raises a `ValueError`.
-    - If the list contains **one** node, it executes it sequentially.
-    - If the list contains **multiple** nodes, it distributes them across threads.
-
-    Args:
-        nodes (List[Node]): The list of nodes to execute.
-
-    Raises:
-        ValueError: If the list is empty.
-        AssertionError: If more than one node is marked as `is_main_thread`.
-    """
-    if isinstance(nodes, list) and all(map(lambda x: isinstance(x, ParallelNode), nodes)):
-        _execute_multiple(nodes)
-    elif isinstance(nodes, Node):
-        _execute_single(nodes)
-    else:
-        raise TypeError(f'Cannot recognize type of nodes: {nodes}')

@@ -1,7 +1,6 @@
 from threading import Event
 from .node import Node
-from quflow.tasks import Task
-from quflow.status import Status
+from quflow.tasks import Task, TaskContext
 
 
 
@@ -12,15 +11,21 @@ class ParallelNode(Node):
 
         super().__init__(name=name, task=task)
         self.run_in_main_thread = run_in_main_thread
-        self.interrupt: Event | None = None
+        self._interrupt: Event | None = None
 
-    def create_context(self):
+    @property
+    def interrupt(self) -> Event:
+        if self._interrupt is None:
+            self._interrupt = Event()
+        return self._interrupt
+
+    def create_context(self) -> TaskContext:
         ctx = super().create_context()
         ctx.interrupt = self.interrupt
         return ctx
 
     def load_interrupt(self, interrupt: Event):
-        self.interrupt = interrupt
+        self._interrupt = interrupt
 
     def run(self):
         try:

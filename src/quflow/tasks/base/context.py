@@ -1,4 +1,4 @@
-from typing import Optional, Any, Callable
+from typing import Any, Callable
 from dataclasses import dataclass
 import threading
 
