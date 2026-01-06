@@ -1,0 +1,20 @@
+[project]
+name = "quflow"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "RosenblumLabUser", email = "79983570+RosenblumLabUser@users.noreply.github.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.10.6",
+    "rustworkx>=0.16.0",
+    "matplotlib",
+    "pyqt5==5.15.11",
+    "pytest"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
