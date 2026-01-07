@@ -36,14 +36,19 @@ from quflow import (
     create_single_item_channel
 )
 
+from threading import Event
+from functools import partial
+
 
 # Utility Functions
-def generate_wave(ctx):
+def generate_wave(ctx, is_done: Event):
     """Yield a sine wave in small chunks over time (simulating a fast data stream)."""
     for val in np.linspace(0, 10 * np.pi, 500):
         if ctx.interrupt.is_set():
             break
         yield val, np.sin(val)
+
+    is_done.set()
 
 
 class Aggregator:
@@ -90,7 +95,7 @@ def main():
     generator_is_done = threading.Event()
 
     # Create generator task
-    gen_task = GeneratorFuncTask(generator_callable=generate_wave)
+    gen_task = GeneratorFuncTask(generator_callable=partial(generate_wave, is_done=generator_is_done))
 
     # Create polling aggregator that reads chunks
     agg_task = TransformFuncTask(func=aggregator.append_data)
@@ -116,23 +121,7 @@ def main():
 
     flow.connect_dataflow(node_gen, node_agg, gen_to_agg)
     flow.connect_dataflow(node_agg, node_plot, agg_to_plot)
-
-    # Monitor generator completion
-    def check_generator_done():
-        import time
-        time.sleep(0.1)  # Give generator a moment to start
-        while True:
-            if flow.status != flow.status.RUNNING:
-                break
-            # Check if generator node is done
-            if node_gen.status.value >= 2:  # FINISHED, STOPPED, etc.
-                generator_is_done.set()
-                break
-            time.sleep(0.05)
-
-    # Start monitoring thread
-    monitor_thread = threading.Thread(target=check_generator_done, daemon=True)
-    monitor_thread.start()
+    flow.connect_dependency(node_agg, node_plot)
 
     # Visualize and execute
     flow.visualize()

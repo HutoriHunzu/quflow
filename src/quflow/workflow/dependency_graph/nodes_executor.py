@@ -18,10 +18,6 @@ def execute_multiple_nodes(nodes: list[ParallelNode]) -> None:
         AssertionError: If more than one node is marked as `is_main_thread`.
         Exception: If the main-thread node raises an exception.
     """
-    # Creating interrupt event for all nodes and loading it
-    interrupt = threading.Event()
-    for n in nodes:
-        n.load_interrupt(interrupt)
 
     # Separate main-thread and background nodes
     main_thread_nodes = list(filter(lambda x: x.run_in_main_thread, nodes))
