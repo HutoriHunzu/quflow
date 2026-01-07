@@ -60,23 +60,30 @@ def main():
     shift_to_print = create_single_item_channel()
 
     # Counter for stop condition
+    # Using a dictionary so the counter can be mutated inside the nested function
     iteration_count = {"count": 0}
     max_iterations = 10
 
     def increment_and_check():
+        """Increment counter and check if we've reached max iterations.
+
+        This is called by fetch_polling on each iteration, so it controls
+        the polling loop for all tasks (since they all check the same counter).
+        """
         iteration_count["count"] += 1
         return iteration_count["count"] >= max_iterations
 
-    # Create task templates
+    # Create task templates (simple function wrappers)
     fetch_task = OutputFuncTask(func=fetch_data)
     shift_task = TransformFuncTask(func=shift_data)
     print_task = InputFuncTask(func=print_data)
 
-    # Wrap in PollingTask for repeated execution
+    # Compositional design: Wrap simple tasks in PollingTask for repeated execution.
+    # PollingTask is a Decorator that wraps ANY Task instance and runs it repeatedly.
     fetch_polling = PollingTask(
-        task=fetch_task,
-        stop_callable=increment_and_check,
-        refresh_time_seconds=0.1
+        task=fetch_task,  # The task to run repeatedly
+        stop_callable=increment_and_check,  # Called each iteration to check if done
+        refresh_time_seconds=0.1  # Wait time between iterations
     )
     shift_polling = PollingTask(
         task=shift_task,
@@ -89,7 +96,9 @@ def main():
         refresh_time_seconds=0.1
     )
 
-    # Create parallel nodes
+    # ParallelNode: Runs task in a separate thread for concurrent execution.
+    # This allows all three polling tasks to run simultaneously, each reading
+    # and processing data as it becomes available in their input channels.
     node_fetch = ParallelNode("fetch", fetch_polling)
     node_shift = ParallelNode("shift", shift_polling)
     node_print = ParallelNode("print", print_polling)

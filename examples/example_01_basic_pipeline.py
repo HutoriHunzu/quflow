@@ -78,15 +78,27 @@ from quflow import (
 
 def main():
     # Create channels for data flow between nodes.
+    # Single-item channel: Only keeps the latest value, older values are overwritten.
+    # Perfect for scenarios where only the most recent data matters.
     fetch_to_post = create_single_item_channel()
     post_to_plot = create_single_item_channel()
 
     # Wrap our utility functions with appropriate task templates.
+    # OutputFuncTask: For source/producer functions that generate data without input.
+    # Function signature: func() -> Any
     fetch_task = OutputFuncTask(func=fetch_data)
+
+    # TransformFuncTask: For processor functions that transform input to output.
+    # Function signature: func(data) -> Any
     post_task = TransformFuncTask(func=post_process)
+
+    # InputFuncTask: For sink/consumer functions that process data without producing output.
+    # Function signature: func(data) -> None
     plot_task = InputFuncTask(func=plot_data)
 
     # Create Nodes corresponding to each task.
+    # Node: Runs tasks sequentially in the main execution flow (not in separate threads).
+    # Tasks execute in dependency order determined by the workflow connections.
     node_fetch = Node("fetch", fetch_task)
     node_post = Node("post", post_task)
     node_plot = Node("plot", plot_task)

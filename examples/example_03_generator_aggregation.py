@@ -27,13 +27,10 @@ import matplotlib.pyplot as plt
 from quflow import (
     GeneratorFuncTask,
     PollingTask,
-    TransformFuncTask,
     InputFuncTask,
-    Node,
     ParallelNode,
     Workflow,
     create_queue_channel,
-    create_single_item_channel
 )
 
 from threading import Event
@@ -65,15 +62,10 @@ class Aggregator:
         for (x, y) in new_chunk:
             self.x_data.append(x)
             self.y_data.append(y)
-        return self.x_data, self.y_data
 
 
-def plot_final_data(data):
+def plot_final_data(x_vals, y_vals):
     """Plot the final aggregated sine wave."""
-    if not data:
-        print("No data to plot")
-        return
-    x_vals, y_vals = data
     plt.figure(figsize=(10, 6))
     plt.plot(x_vals, y_vals, 'b-', linewidth=2)
     plt.title("Aggregated Sine Wave Data")
@@ -88,46 +80,52 @@ def main():
     aggregator = Aggregator()
 
     # Create channels
-    gen_to_agg = create_queue_channel(read_max_chunk=10)  # Queue for batch reading
-    agg_to_plot = create_single_item_channel()            # Latest aggregated result
+    # Queue channel with batch reading: Reads up to 10 items at once for efficiency.
+    # Unlike single_item_channel, queue channels preserve ALL items (no drops).
+    # Perfect for high-throughput producers that need all data processed.
+    gen_to_agg = create_queue_channel(read_max_chunk=10)
 
-    # Events for coordination
+    # Events for coordination between threads
     generator_is_done = threading.Event()
 
-    # Create generator task
-    gen_task = GeneratorFuncTask(generator_callable=partial(generate_wave, is_done=generator_is_done))
+    # GeneratorFuncTask requires a callable (not a generator instance).
+    # The callable receives TaskContext and returns a generator.
+    # Use functools.partial to bind additional parameters (like is_done event).
+    gen_task = GeneratorFuncTask(
+        generator_callable=partial(generate_wave, is_done=generator_is_done)
+    )
 
     # Create polling aggregator that reads chunks
-    agg_task = TransformFuncTask(func=aggregator.append_data)
+    # The aggregator.append_data method receives a list of items (batch read)
+    agg_task = InputFuncTask(func=aggregator.append_data)
     agg_polling = PollingTask(
         task=agg_task,
         stop_callable=lambda: generator_is_done.is_set() and gen_to_agg.is_empty(),
         refresh_time_seconds=0.05
     )
 
-    # Create final plot task (runs once at the end)
-    plot_task = InputFuncTask(func=plot_final_data)
-
     # Create nodes
     node_gen = ParallelNode("generator", gen_task)
     node_agg = ParallelNode("aggregator", agg_polling)
-    node_plot = Node("plot", plot_task)  # Sequential node, runs after aggregator
+
 
     # Build workflow
     flow = Workflow()
     flow.add_node(node_gen)
     flow.add_node(node_agg)
-    flow.add_node(node_plot)
 
+    # connect_dataflow: Sets up a data channel between nodes.
+    # Data flows from source node's output to destination node's input.
     flow.connect_dataflow(node_gen, node_agg, gen_to_agg)
-    flow.connect_dataflow(node_agg, node_plot, agg_to_plot)
-    flow.connect_dependency(node_agg, node_plot)
 
     # Visualize and execute
     flow.visualize()
     flow.execute()
 
     print(f"\nAggregated {len(aggregator.x_data)} data points")
+    # After it is done read the output from the aggregator channel
+    plot_final_data(aggregator.x_data, aggregator.y_data)
+
 
 
 if __name__ == '__main__':
