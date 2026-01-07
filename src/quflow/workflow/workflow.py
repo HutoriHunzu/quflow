@@ -3,7 +3,7 @@ contains a unified class to support high level methods for connecting tasks
 should expose Node if wanted but maybe keep it inside
 
 """
-
+from typing import TypeVar
 from .node import NodeTypes
 from .dependency_graph import DependencyGraph
 from .dataflow_graph import DataFlowGraph
@@ -13,6 +13,7 @@ from quflow.status import Status, return_most_harsh_status
 
 import matplotlib.pyplot as plt
 
+T = TypeVar('T', bound=NodeTypes)
 
 class Workflow:
     """Orchestrates a pipeline of Nodes and handles their execution order.
@@ -53,7 +54,7 @@ class Workflow:
         self._result_node = node
         self._result_node.write_channel = self._result_channel
 
-    def add_node(self, node: NodeTypes):
+    def add_node(self, node: T) -> T:
         self.dependency_graph.add_node(node)
         self.data_flow_graph.add_node(node)
         return node
@@ -69,7 +70,7 @@ class Workflow:
             old_node_name=old_node_name, new_node=new_node
         )
 
-    def add_nodes(self, nodes: list[NodeTypes]):
+    def add_nodes(self, nodes: list[T]) -> list[T]:
         for node in nodes:
             self.add_node(node)
         return nodes
