@@ -1,8 +1,15 @@
-
 from quflow.status import Status
 
 # Adjust these imports if they live elsewhere in your package
-from quflow.tasks import ContextFuncTask, PollingTask, Task, TaskContext, TransformFuncTask, OutputFuncTask, InputFuncTask
+from quflow.tasks import (
+    ContextFuncTask,
+    PollingTask,
+    Task,
+    TaskContext,
+    TransformFuncTask,
+    OutputFuncTask,
+    InputFuncTask,
+)
 
 
 def test_output_func_task_writes_result_and_does_not_read(ctx_out_only):

@@ -5,11 +5,16 @@ from unittest.mock import Mock
 from quflow.status import Status
 from quflow.tasks.base import TaskContext
 
-from quflow.communications.channels import Channel, SingleReadStrategy, SingleWriteStrategy
+from quflow.communications.channels import (
+    Channel,
+    SingleReadStrategy,
+    SingleWriteStrategy,
+)
 from quflow.communications.storage import SingleItemStorage
 
 
 # ----- Channels -----
+
 
 @pytest.fixture
 def make_single_item_channel():
@@ -17,12 +22,14 @@ def make_single_item_channel():
     Factory fixture: returns a NEW single-item Channel each call.
     Using explicit Channel(...) keeps channel tests honest (not testing a helper).
     """
+
     def _make() -> Channel:
         return Channel(
             storage=SingleItemStorage(),
             read_strategy=SingleReadStrategy(),
             write_strategy=SingleWriteStrategy(),
         )
+
     return _make
 
 
@@ -39,6 +46,7 @@ def io_channels(make_single_item_channel):
 
 
 # ----- Task contexts -----
+
 
 @pytest.fixture
 def ctx_io(io_channels):
@@ -94,6 +102,7 @@ def ctx_bare(make_single_item_channel):
 
 
 # ----- Aliases for nicer test ergonomics -----
+
 
 @pytest.fixture
 def make_channel(make_single_item_channel):

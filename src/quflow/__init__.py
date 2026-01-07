@@ -28,5 +28,5 @@ __all__ = [
     "Status",
     "return_most_harsh_status",
     "Node",
-    "ParallelNode"
+    "ParallelNode",
 ]
