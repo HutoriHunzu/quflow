@@ -1,4 +1,3 @@
-import threading
 from concurrent import futures
 from ..node import Node, ParallelNode
 
