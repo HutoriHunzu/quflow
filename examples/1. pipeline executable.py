@@ -28,21 +28,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def fetch_data(ctx, data = None):
+def fetch_data():
     """Simulate data acquisition (e.g., from a sensor)."""
     x = np.linspace(0, 100, 100)
     y = x ** 2  # Quadratic data
     return x, y
 
 
-def post_process(ctx, data):
+def post_process(data):
     """Apply a simple transformation on the fetched data."""
     x, y = data
     y_shifted = y - 500  # Subtract offset
     return x, y_shifted
 
 
-def plot_data(ctx, data):
+def plot_data(data):
     """Plot the processed data using matplotlib."""
     x, y = data
     plt.plot(x, y)
@@ -56,7 +56,8 @@ def plot_data(ctx, data):
 
 # Next, we assemble our pipeline by creating the following building blocks:
 #   1. Workflow: The container that manages execution.
-#   2. Tasks (via FuncTask): Wrap our functions for standardized execution.
+#   2. Tasks (OutputFuncTask, TransformFuncTask, InputFuncTask):
+#      Wrap our functions with appropriate I/O patterns.
 #   3. Nodes: Each node holds a task and can include metadata (like a name).
 #   4. Channels: These handle data transfer between nodes using a single-item mechanism.
 #
@@ -66,7 +67,9 @@ def plot_data(ctx, data):
 #   - The "plot" node finally visualizes the result.
 
 from quflow import (
-    FuncTask,
+    OutputFuncTask,
+    TransformFuncTask,
+    InputFuncTask,
     Node,
     Workflow,
     create_single_item_channel
@@ -78,10 +81,10 @@ def main():
     fetch_to_post = create_single_item_channel()
     post_to_plot = create_single_item_channel()
 
-    # Wrap our utility functions in FuncTasks.
-    fetch_task = FuncTask(func=fetch_data)
-    post_task = FuncTask(func=post_process)
-    plot_task = FuncTask(func=plot_data)
+    # Wrap our utility functions with appropriate task templates.
+    fetch_task = OutputFuncTask(func=fetch_data)
+    post_task = TransformFuncTask(func=post_process)
+    plot_task = InputFuncTask(func=plot_data)
 
     # Create Nodes corresponding to each task.
     node_fetch = Node("fetch", fetch_task)

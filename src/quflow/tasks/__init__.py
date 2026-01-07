@@ -11,6 +11,7 @@ from .templates import (
     ContextFuncTask,
     PollingTask,
     TransformFuncTask,
+    GeneratorFuncTask,
 )
 
 __all__ = [
@@ -21,4 +22,5 @@ __all__ = [
     "ContextFuncTask",
     "PollingTask",
     "TransformFuncTask",
+    "GeneratorFuncTask",
 ]

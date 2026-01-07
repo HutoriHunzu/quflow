@@ -6,8 +6,9 @@ from .tasks import (
     OutputFuncTask,
     TransformFuncTask,
     ContextFuncTask,
+    GeneratorFuncTask,
 )
-from .workflow import Workflow
+from .workflow import Workflow, Node, ParallelNode
 from .communications import create_queue_channel, create_single_item_channel
 from .status import Status, return_most_harsh_status
 
@@ -18,6 +19,7 @@ __all__ = [
     "OutputFuncTask",
     "InputFuncTask",
     "PollingTask",
+    "GeneratorFuncTask",
     "TaskContext",
     "Task",
     "Workflow",
@@ -25,4 +27,6 @@ __all__ = [
     "create_single_item_channel",
     "Status",
     "return_most_harsh_status",
+    "Node",
+    "ParallelNode"
 ]
