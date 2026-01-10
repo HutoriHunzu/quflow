@@ -13,7 +13,7 @@ class Status(StrEnum):
 
 
 def return_most_harsh_status(statuses: Iterable[Status]):
-    return max(statuses)
+    return min(statuses)
 
 
 class StatusReporter:
