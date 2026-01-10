@@ -1,10 +1,11 @@
+from collections.abc import Callable, Iterable
 from enum import StrEnum, auto
-from typing import Callable, Iterable
 
 
 class Status(StrEnum):
     STOPPED = auto()
     CRASHED = auto()
+    REJECT = auto()
     FINISHED = auto()
     RUNNING = auto()
     SKIP = auto()
