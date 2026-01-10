@@ -12,8 +12,18 @@ class Status(StrEnum):
     STOPPED = auto()
 
 
-def return_most_harsh_status(statuses: Iterable[Status]):
-    return max(statuses)
+_SEVERITY: dict[Status, int] = {
+    Status.PENDING: 0,
+    Status.RUNNING: 1,
+    Status.SKIP: 2,
+    Status.FINISHED: 3,
+    Status.REJECT: 4,
+    Status.STOPPED: 5,
+    Status.CRASHED: 6,
+}
+
+def return_most_harsh_status(statuses: Iterable[Status]) -> Status:
+    return max(statuses, key=lambda x: _SEVERITY.get(x, 1))
 
 
 class StatusReporter:
