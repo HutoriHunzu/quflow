@@ -28,6 +28,7 @@ class ParallelNode(Node):
 
     def run(self):
         try:
+            self.status = Status.RUNNING
             ctx = self.create_context()
             self.task.run(ctx)
             if ctx.status is Status.RUNNING:
