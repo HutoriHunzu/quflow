@@ -3,17 +3,21 @@ contains a unified class to support high level methods for connecting tasks
 should expose Node if wanted but maybe keep it inside
 
 """
+
 from typing import TypeVar
-from .node import NodeTypes
-from .dependency_graph import DependencyGraph
-from .dataflow_graph import DataFlowGraph
-from .graph_handler import produce_unified_pos
-from quflow.communications import Channel, create_single_item_channel
-from quflow.status import Status, return_most_harsh_status
 
 import matplotlib.pyplot as plt
 
-T = TypeVar('T', bound=NodeTypes)
+from quflow.communications import Channel, create_single_item_channel
+from quflow.status import Status, return_most_harsh_status
+
+from .dataflow_graph import DataFlowGraph
+from .dependency_graph import DependencyGraph
+from .graph_handler import produce_unified_pos
+from .node import NodeTypes
+
+T = TypeVar("T", bound=NodeTypes)
+
 
 class Workflow:
     """Orchestrates a pipeline of Nodes and handles their execution order.

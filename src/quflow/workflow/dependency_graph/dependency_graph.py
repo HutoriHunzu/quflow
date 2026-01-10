@@ -1,12 +1,13 @@
+import threading
+from collections.abc import Callable
+
 import rustworkx as rx
 from rustworkx.visualization import mpl_draw
-from typing import Callable
-from ..node import NodeTypes, Node, ParallelNode
-from ..graph_handler import GraphHandler, GraphTypes
 
-from .sequencer import sequencer_of_nodes_and_parallel
+from ..graph_handler import GraphHandler, GraphTypes
+from ..node import Node, NodeTypes, ParallelNode
 from .nodes_executor import execute_multiple_nodes
-import threading
+from .sequencer import sequencer_of_nodes_and_parallel
 
 
 class DependencyGraph:

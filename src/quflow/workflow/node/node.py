@@ -57,9 +57,11 @@ class Node:
         read_callable, write_callable = io_adapter(
             self.read_channel, self.write_channel
         )
-        return TaskContext(read_callable=read_callable,
-                           write_callable=write_callable,
-                           status=self.status)
+        return TaskContext(
+            read_callable=read_callable,
+            write_callable=write_callable,
+            status=self.status,
+        )
 
     def run(self):
         self.status = Status.RUNNING

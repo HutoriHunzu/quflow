@@ -65,4 +65,3 @@ class GeneratorFuncTask(Task):
 
             if ctx.interrupt.is_set():
                 return
-
