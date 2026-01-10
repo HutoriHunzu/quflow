@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from quflow.status import Status
+
 from quflow.tasks.base.context import TaskContext
 
 
@@ -12,5 +12,5 @@ class Task(ABC):
     """
 
     @abstractmethod
-    def run(self, ctx: TaskContext) -> Status:
+    def run(self, ctx: TaskContext):
         pass

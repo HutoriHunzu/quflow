@@ -1,6 +1,9 @@
 from threading import Event
-from .node import Node
+
+from quflow.status import Status
 from quflow.tasks import Task, TaskContext
+
+from .node import Node
 
 
 class ParallelNode(Node):
@@ -26,7 +29,12 @@ class ParallelNode(Node):
     def run(self):
         try:
             ctx = self.create_context()
-            return self.task.run(ctx)
+            self.task.run(ctx)
+            if ctx.status is Status.RUNNING:
+                self.status = Status.FINISHED
+            else:
+                self.status = ctx.status
         except Exception as exc:
             self.interrupt.set()
+            self.status = Status.CRASHED
             raise Exception(f"Exception @ Node: {self.name} -- {exc}") from exc

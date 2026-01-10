@@ -1,6 +1,5 @@
-from typing import Callable
+from collections.abc import Callable
 
-from quflow.status import Status
 from quflow.tasks.base import Task, TaskContext
 
 
@@ -48,6 +47,5 @@ class ContextFuncTask(Task):
     def __init__(self, *, func: Callable[[TaskContext], None]):
         self.func = func
 
-    def run(self, ctx: TaskContext) -> Status:
+    def run(self, ctx: TaskContext):
         self.func(ctx)
-        return Status.FINISHED

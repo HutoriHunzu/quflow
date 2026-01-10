@@ -1,6 +1,6 @@
 from quflow.communications import Channel
-from quflow.tasks import Task, TaskContext
 from quflow.status import Status
+from quflow.tasks import Task, TaskContext
 
 
 def empty_read():
@@ -45,7 +45,7 @@ class Node:
         self.read_channel: Channel | None = None
         self.write_channel: Channel | None = None
         self.appearances = {}  # graph name to index
-        # self.status: Status = Status.PENDING
+        self.status: Status = Status.PENDING
 
     def register_to_graph(self, graph_name, index: int):
         self.appearances[graph_name] = index
@@ -53,19 +53,19 @@ class Node:
     def get_graph_membership_index(self, graph_name) -> int:
         return self.appearances[graph_name]
 
-    @property
-    def status(self):
-        return Status.PENDING
-
-    # def set_status(self, status_value: Status):
-    #     self.status = status_value
-
     def create_context(self) -> TaskContext:
         read_callable, write_callable = io_adapter(
             self.read_channel, self.write_channel
         )
-        return TaskContext(read_callable=read_callable, write_callable=write_callable)
+        return TaskContext(read_callable=read_callable,
+                           write_callable=write_callable,
+                           status=self.status)
 
     def run(self):
+        self.status = Status.RUNNING
         ctx = self.create_context()
-        return self.task.run(ctx)
+        self.task.run(ctx)
+        if ctx.status is Status.RUNNING:
+            self.status = Status.FINISHED
+        else:
+            self.status = ctx.status

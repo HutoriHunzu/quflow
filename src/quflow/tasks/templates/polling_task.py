@@ -1,6 +1,5 @@
-from typing import Callable
+from collections.abc import Callable
 
-from quflow.status import Status
 from quflow.tasks.base import Task, TaskContext
 from quflow.tasks.utils import false_function
 
@@ -59,16 +58,10 @@ class PollingTask(Task):
         self.stop_callable = stop_callable
         self.refresh_time_seconds = refresh_time_seconds
 
-    def run(self, ctx: TaskContext) -> Status:
+    def run(self, ctx: TaskContext):
         while not (self.stop_callable() or ctx.interrupt.is_set()):
             # Run the wrapped task completely
-            status = self.task.run(ctx)
-
-            # If wrapped task failed, propagate the status
-            if status != Status.FINISHED:
-                return status
+            self.task.run(ctx)
 
             # Wait before next iteration (interruptible)
             ctx.interrupt.wait(self.refresh_time_seconds)
-
-        return Status.FINISHED

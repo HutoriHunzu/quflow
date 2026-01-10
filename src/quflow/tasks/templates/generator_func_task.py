@@ -1,6 +1,6 @@
-from typing import Callable, Generator, Any
+from collections.abc import Callable, Generator
+from typing import Any
 
-from quflow.status import Status
 from quflow.tasks.base import Task, TaskContext
 
 
@@ -57,13 +57,12 @@ class GeneratorFuncTask(Task):
     ):
         self.generator_callable = generator_callable
 
-    def run(self, ctx: TaskContext) -> Status:
+    def run(self, ctx: TaskContext):
         gen = self.generator_callable(ctx)
 
         for output_data in gen:
             ctx.write_callable(output_data)
 
             if ctx.interrupt.is_set():
-                return Status.FINISHED
+                return
 
-        return Status.FINISHED

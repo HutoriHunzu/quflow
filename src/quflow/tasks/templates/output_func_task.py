@@ -1,6 +1,6 @@
-from typing import Callable, Any
+from collections.abc import Callable
+from typing import Any
 
-from quflow.status import Status
 from quflow.tasks.base import Task, TaskContext
 
 
@@ -43,7 +43,6 @@ class OutputFuncTask(Task):
     def __init__(self, *, func: Callable[[], Any]):
         self.func = func
 
-    def run(self, ctx: TaskContext) -> Status:
+    def run(self, ctx: TaskContext):
         result = self.func()
         ctx.write_callable(result)
-        return Status.FINISHED

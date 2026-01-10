@@ -1,6 +1,6 @@
-from typing import Callable, Any
+from collections.abc import Callable
+from typing import Any
 
-from quflow.status import Status
 from quflow.tasks.base import Task, TaskContext
 
 
@@ -42,7 +42,6 @@ class InputFuncTask(Task):
     def __init__(self, *, func: Callable[[Any], None]):
         self.func = func
 
-    def run(self, ctx: TaskContext) -> Status:
+    def run(self, ctx: TaskContext):
         data = ctx.read_callable()
         self.func(data)
-        return Status.FINISHED
