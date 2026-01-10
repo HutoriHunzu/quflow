@@ -3,17 +3,17 @@ from enum import StrEnum, auto
 
 
 class Status(StrEnum):
-    STOPPED = auto()
-    CRASHED = auto()
-    REJECT = auto()
-    FINISHED = auto()
+    PENDING = auto()
     RUNNING = auto()
     SKIP = auto()
-    PENDING = auto()
+    FINISHED = auto()
+    REJECT = auto()
+    CRASHED = auto()
+    STOPPED = auto()
 
 
 def return_most_harsh_status(statuses: Iterable[Status]):
-    return min(statuses)
+    return max(statuses)
 
 
 class StatusReporter:
