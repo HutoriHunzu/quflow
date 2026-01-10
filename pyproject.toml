@@ -1,6 +1,6 @@
 [project]
 name = "quflow"
-version = "0.2.0"
+version = "0.3.0"
 description = "A Python framework for building and orchestrating data-processing pipelines"
 readme = "README.md"
 license = { text = "MIT" }
