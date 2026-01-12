@@ -22,6 +22,7 @@ _SEVERITY: dict[Status, int] = {
     Status.CRASHED: 6,
 }
 
+
 def return_most_harsh_status(statuses: Iterable[Status]) -> Status:
     return max(statuses, key=lambda x: _SEVERITY.get(x, 1))
 
